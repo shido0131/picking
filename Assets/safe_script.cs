@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class safe_script : MonoBehaviour
 {
+
     bool anima;
     public Animator animator;
     // Start is called before the first frame update
