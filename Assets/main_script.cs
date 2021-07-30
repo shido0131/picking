@@ -12,14 +12,12 @@ public class main_script : MonoBehaviour
     int pass3;
     int pass4;
     int pass5;
-    int pass6;
-    int pass7;
-    int pass8;
-    int pass9;
-    int pass10;
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+    }
+    void setplay()
+    {
         number = 0;
     }
 
@@ -36,14 +34,13 @@ public class main_script : MonoBehaviour
                 {
                     if (number <= 0)
                     {
-                        number =60;
+                        number = 60;
                     }
                     else
                     {
                         number -= 6;
+                        transform.Rotate(0f, 0f, -6f);
                     }
-
-                    transform.Rotate(0f, 0f, -6f);
                     audioSource.PlayOneShot(Sound1);
                     Debug.Log(number);
                 }
@@ -57,8 +54,8 @@ public class main_script : MonoBehaviour
                     else
                     {
                         number += 6;
+                        transform.Rotate(0f, 0f, 6f);
                     }
-                    transform.Rotate(0f, 0f, 6f);
                     audioSource.PlayOneShot(Sound1);
                     Debug.Log(number);
 
