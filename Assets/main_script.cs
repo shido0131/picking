@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class main_script : MonoBehaviour
 {
+    public float volume;
     public AudioClip Sound1;
     AudioSource audioSource;
+    int soundlevel;
     int number;
+    int 
     int pass1;
     int pass2;
     int pass3;
@@ -14,16 +17,26 @@ public class main_script : MonoBehaviour
     int pass5;
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
+        AudioSource audio = GetComponent<AudioSource>();
+        audio.volume = volume;
     }
     void setplay()
     {
         number = 0;
+        pass1 = Random.Range(1, 60);
+        pass2 = Random.Range(1, 60);
+        pass3 = Random.Range(1, 60);
+        pass4 = Random.Range(1, 60);
+        pass5 = Random.Range(1, 60);
+
+
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        setSoundLevel();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if(Physics.Raycast(ray,out hit, 10.0f))
@@ -64,5 +77,9 @@ public class main_script : MonoBehaviour
         }
         Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);
         
+    }
+    void setSoundLevel()
+    {
+
     }
 }
