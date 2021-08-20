@@ -4,77 +4,54 @@ using UnityEngine;
 
 public class test : MonoBehaviour
 {
-    Vector2 pos;         // クリック時のマウス位置
-    Quaternion rotation; // クリックしたときのターゲットの角度
+    public GameObject targetObject;
+    public Vector3 rotationSpeed = new Vector3(0.1f, 0.2f,0.1f);
+    public bool reverse;
+    public float zoomSpeed = 1;
 
-    Vector2 vecA;        // ターゲットの中心からposへのベクトル
-    Vector2 vecB;        // ターゲットの中心から現マウス位置へのベクトル
+    private Camera mainCamera;
+    private Vector2 lastMousePosition;
 
-    float angle;         // vecAとvecBが成す角度
-    Vector3 AxB;         // vecAとvecBの外積
-
-    bool Drag;           //ドラッグ中のフラグ
 
     // Start is called before the first frame update
     void Start()
     {
+        mainCamera = Camera.main;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // マウスのクリック状態からメソッドを選択
-        if (Drag)
+        if (Input.GetMouseButtonDown(0))
         {
-            Rotate();
+            lastMousePosition = Input.mousePosition;
         }
-        else
+        else if (Input.GetMouseButton(0))
         {
-            SetPos();
-        }
-        Debug.Log(Drag);
-    }
-    void SetPos()
-    {
-        //クリック時のマウスの初期位置とターゲットの現角度を取得
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            pos = Camera.main.ScreenToWorldPoint(Input.mousePosition); // マウス位置をワールド座標で取得
-            rotation = this.transform.rotation;                        // ターゲットの現角度を取得
-            Drag = true;                                               // クリックフラグをONにする
-        }
-    }
-    void Rotate()
-    {
-        //ドラッグが解除されたらフラグをOFFにしてReturn
-        if (Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            Drag = false;
-            return;
-        }
+            if (!reverse)
+            {
+                var x = (Input.mousePosition.y - lastMousePosition.y);
+                var y = (lastMousePosition.x - Input.mousePosition.x);
 
-        //マウス初期位置のベクトルを求める
-        vecA = pos - (Vector2)this.transform.position;
+                var newAngle = Vector3.zero;
+                newAngle.x = x * rotationSpeed.x;
+                newAngle.y = y * rotationSpeed.y;
 
-        //現マウス位置のベクトルを求める
-        vecB = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+                targetObject.transform.Rotate(newAngle);
+                lastMousePosition = Input.mousePosition;
+            }
+            else
+            {
+                var x = (lastMousePosition.y - Input.mousePosition.y);
+                var y = (Input.mousePosition.x - lastMousePosition.x);
 
-        // Vector2にしているのはz座標が悪さをしないようにするため
+                var newAngle = Vector3.zero;
+                newAngle.x = x * rotationSpeed.x;
+                newAngle.y = y * rotationSpeed.y;
 
-        //マウスの初期位置と現マウス位置から角度と外積を求める
-        angle = Vector2.Angle(vecA, vecB);  //角度を計算
-        AxB = Vector3.Cross(vecA, vecB);    //外積を計算
-        Debug.Log(vecA);
-        Debug.Log(vecB);
-
-        // 外積の z 成分の正負で回転方向を決める
-        if (AxB.z > 0)
-        {
-            this.transform.localRotation = rotation * Quaternion.Euler(0, 0, angle); // 初期値との掛け算で相対的に回転させる
-        }
-        else
-        {
-            this.transform.localRotation = rotation * Quaternion.Euler(0, 0, -angle); // 初期値との掛け算で相対的に回転させる
+                targetObject.transform.Rotate(newAngle);
+                lastMousePosition = Input.mousePosition;
+            }
         }
     }
 }

@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class main_script : MonoBehaviour
 {
+    public GameObject targetobj;
+    bool mouthpoint;
     public float volume;
     public AudioClip Sound1;
     AudioSource audioSource;
     int soundlevel;
     int number;
-    int 
     int pass1;
     int pass2;
     int pass3;
     int pass4;
     int pass5;
+
+    private Camera mainCamera;
+    private Vector2 lastMousePosition;
+
     void Start()
     {
+        mainCamera = Camera.main;
         AudioSource audio = GetComponent<AudioSource>();
         audio.volume = volume;
     }
@@ -36,7 +42,15 @@ public class main_script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        setSoundLevel();
+        number = (int)(transform.rotation.z / 6);
+        if (number <= 61)
+        {
+            number = 0;
+        }
+        var aim = this.targetobj.transform.position - this.transform.position;
+        var look = Quaternion.LookRotation(aim);
+        this.transform.localRotation = look;
+        /*setSoundLevel();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if(Physics.Raycast(ray,out hit, 10.0f))
@@ -74,12 +88,7 @@ public class main_script : MonoBehaviour
 
                 }
             }
-        }
-        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);
-        
-    }
-    void setSoundLevel()
-    {
+        Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);*/
 
     }
 }
