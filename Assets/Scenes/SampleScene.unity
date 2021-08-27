@@ -302,7 +302,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 1493b49f88a8b824f947aa6d0c49cf0a, type: 3}
       propertyPath: m_Name
-      value: safe_2
+      value: safe_dial
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 1493b49f88a8b824f947aa6d0c49cf0a, type: 3}
       propertyPath: m_TagString
@@ -322,15 +322,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1493b49f88a8b824f947aa6d0c49cf0a, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1493b49f88a8b824f947aa6d0c49cf0a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1493b49f88a8b824f947aa6d0c49cf0a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1493b49f88a8b824f947aa6d0c49cf0a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -377,9 +377,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1a396201777e4d4eb19bcc69dbc5ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetobj: {fileID: 0}
-  volume: 0
+  Volume: 0
   Sound1: {fileID: 8300000, guid: d750b89c424fe6940bec545e7b133d3e, type: 3}
+  pass: 0
 --- !u!82 &730952649
 AudioSource:
   m_ObjectHideFlags: 0
@@ -489,22 +489,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.0018
   m_Center: {x: 0, y: 0, z: -0.0005}
---- !u!54 &730952654
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 730952647}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 62
-  m_CollisionDetection: 0
 --- !u!1001 &1146235202
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -514,7 +498,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100004, guid: 0dede1c13daf20d43aacd27ad98d00f2, type: 3}
       propertyPath: m_Name
-      value: safe_1
+      value: safe_main
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 0dede1c13daf20d43aacd27ad98d00f2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -625,7 +609,6 @@ GameObject:
   - component: {fileID: 1810169342}
   - component: {fileID: 1810169341}
   - component: {fileID: 1810169345}
-  - component: {fileID: 1810169346}
   m_Layer: 0
   m_Name: stage
   m_TagString: Untagged
@@ -718,22 +701,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 1810169340}
-  rotationSpeed: {x: 0.1, y: 0.2}
+  rotationSpeed: {x: 0.1, y: 0.2, z: 0.1}
   reverse: 0
   zoomSpeed: 1
---- !u!54 &1810169346
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1810169340}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 62
-  m_CollisionDetection: 0
