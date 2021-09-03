@@ -540,6 +540,8 @@ MonoBehaviour:
     type: 3}
   password: {fileID: 201756243}
   pass_select: {fileID: 136309047}
+  number: 0
+  stoptime: 0
   pass: 0
 --- !u!82 &730952649
 AudioSource:
@@ -734,7 +736,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1087256938
 MonoBehaviour:
   m_ObjectHideFlags: 0
