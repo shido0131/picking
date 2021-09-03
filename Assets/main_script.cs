@@ -7,20 +7,25 @@ public class main_script : MonoBehaviour
     public float Volume;
     public AudioClip Sound1;
     AudioSource audioSource;
+    public GameObject dummy_safe;
+    public GameObject clear_safe;
+    public GameObject password;
+    public GameObject pass_select;
     int tragetnumeber;
     int soundlevel;
-    int number;
+    public int number;
     int difference;
     int passtimes;
+    public float stoptime;
     public int pass;
-
     private Camera mainCamera;
     private Vector2 lastMousePosition;
 
     void Start()
     {
         mainCamera = Camera.main;
-        this.GetComponent<main_script>().setplay();
+        GetComponent<main_script>().setplay();
+        pass = Random.Range(1, 60);
     }
     void setplay()
     {
@@ -37,7 +42,10 @@ public class main_script : MonoBehaviour
         {
             difference = difference * -1;
         }
-        Debug.Log(difference);
+    }
+    void gameclear()
+    {
+        
     }
 
 
@@ -52,20 +60,38 @@ public class main_script : MonoBehaviour
             audio.volume = 0f;
             audioSource.PlayOneShot(Sound1);
         }*/
+        if (pass == number)
+        {
+            stoptime += Time.deltaTime;
+
+            if (stoptime >= 0.5f)
+            {
+                stoptime = 0;
+                passtimes -= 1;
+                pass = Random.Range(1, 60);
+                if (passtimes == 0)
+                {
+                    GetComponent<main_script>().gameclear();
+                }
+
+            }else if (pass != number)
+            {
+                stoptime = 0;
+            }
+        }
         if (Physics.Raycast(ray, out hit, 10.0f))
         {
             if (hit.collider.gameObject.tag == "dial")
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    number -= 6;
+                    number -= 1;
                     transform.Rotate(0f, 0f, -6f);
                     this.GetComponent<main_script>().CalcAnswer();
                     AudioSource audio = GetComponent<AudioSource>();
                     audio.volume = difference;
-                    audioSource.PlayOneShot(Sound1);
-                    Debug.Log(number);
-                    number = (int)(transform.rotation.z / 6);
+                    //audioSource.PlayOneShot(Sound1);
+                    Volume = 0.1f;
                     if (number > 0)
                     {
                         transform.rotation = Quaternion.Euler(0f, 0f, 360f);
@@ -76,14 +102,13 @@ public class main_script : MonoBehaviour
                 else
                     if (Input.GetMouseButtonDown(1))
                 {
-                    number += 6;
+                    number += 1;
                     transform.Rotate(0f, 0f, 6f);
                     this.GetComponent<main_script>().CalcAnswer();
                     AudioSource audio = GetComponent<AudioSource>();
                     audio.volume = difference;
-                    audioSource.PlayOneShot(Sound1);
-                    Debug.Log(number);
-                    number = (int)(transform.rotation.z / 6);
+                    //audioSource.PlayOneShot(Sound1);
+                    Volume = 0.1f;
                     if (number>60)
                     {
                         transform.rotation= Quaternion.Euler(0, 0, 0);
