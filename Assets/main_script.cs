@@ -16,10 +16,13 @@ public class main_script : MonoBehaviour
     public int number;
     int difference;
     int passtimes;
+    int MousePosi_x;
     public float stoptime;
     public int pass;
     private Camera mainCamera;
-    private Vector2 lastMousePosition;
+    private float startMousePosition;
+    private float lastMousePosition;
+    private bool measurement;
 
     void Start()
     {
@@ -54,12 +57,8 @@ public class main_script : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        /*if (Input.GetKeyDown(KeyCode.A))
-        {
-            AudioSource audio = GetComponent<AudioSource>();
-            audio.volume = 0f;
-            audioSource.PlayOneShot(Sound1);
-        }*/
+
+
         if (pass == number)
         {
             stoptime += Time.deltaTime;
@@ -79,11 +78,36 @@ public class main_script : MonoBehaviour
                 stoptime = 0;
             }
         }
+        if (Input.GetMouseButton(0)&&measurement==true)
+        {
+            lastMousePosition = Input.mousePosition.x;
+            //Debug.Log(lastMousePosition);
+            MousePosi_x = (int)(lastMousePosition - startMousePosition) / 8;
+            Debug.Log(MousePosi_x);
+            if (MousePosi_x > 60)
+            {
+                MousePosi_x -= 60;
+                //Debug.Log(startMousePosition);
+            }
+            transform.Rotate(0f, 0f, MousePosi_x);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            measurement = false;
+            startMousePosition = 0;
+            lastMousePosition = 0;
+        }
         if (Physics.Raycast(ray, out hit, 10.0f))
         {
             if (hit.collider.gameObject.tag == "dial")
             {
                 if (Input.GetMouseButtonDown(0))
+                {
+                    startMousePosition = Input.mousePosition.x;
+                    lastMousePosition = 0;
+                    measurement = true;
+                }
+                /*if (Input.GetMouseButtonDown(0))
                 {
                     number -= 1;
                     transform.Rotate(0f, 0f, -6f);
@@ -116,7 +140,7 @@ public class main_script : MonoBehaviour
                     }
 
 
-                }
+                }*/
             }
             Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);
 
