@@ -13,10 +13,10 @@ public class main_script : MonoBehaviour
     public GameObject pass_select;
     int tragetnumeber;
     int soundlevel;
-    public int number;
+    float number;
     int difference;
     int passtimes;
-    int MousePosi_x;
+    float MousePosi_x;
     public float stoptime;
     public int pass;
     private Camera mainCamera;
@@ -40,7 +40,7 @@ public class main_script : MonoBehaviour
     }
     void CalcAnswer()
     {
-        difference = pass - number;
+        difference = pass - (int)number;
         if (difference < 0)
         {
             difference = difference * -1;
@@ -81,15 +81,20 @@ public class main_script : MonoBehaviour
         if (Input.GetMouseButton(0)&&measurement==true)
         {
             lastMousePosition = Input.mousePosition.x;
-            //Debug.Log(lastMousePosition);
-            MousePosi_x = (int)(lastMousePosition - startMousePosition) / 8;
-            Debug.Log(MousePosi_x);
-            if (MousePosi_x > 60)
-            {
-                MousePosi_x -= 60;
-                //Debug.Log(startMousePosition);
-            }
-            transform.Rotate(0f, 0f, MousePosi_x);
+            MousePosi_x = (lastMousePosition - startMousePosition) / 34;
+            MousePosi_x = Mathf.Floor(MousePosi_x);
+            
+                if (360f >= this.transform.rotation.z+MousePosi_x)
+                {
+                    transform.Rotate(0f, 0f, MousePosi_x);
+                }
+                else
+                {
+                    transform.Rotate(0f, 0f, 360f - (transform.rotation.z + MousePosi_x));
+                }
+            number = (int)transform.rotation.z / 6;
+            number = Mathf.Floor(transform.rotation.z);
+
         }
         else if (Input.GetMouseButtonUp(0))
         {
