@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class main_script : MonoBehaviour
 {
@@ -9,14 +8,14 @@ public class main_script : MonoBehaviour
     AudioSource audioSource;
     public GameObject dummy_safe;
     public GameObject clear_safe;
-    public GameObject password;
-    public GameObject pass_select;
+    public Text nownuber;
     int tragetnumeber;
     int soundlevel;
-    float number;
+    int number;
     int difference;
     int passtimes;
     float MousePosi_x;
+    float MousePosi_y;
     public float stoptime;
     public int pass;
     private Camera mainCamera;
@@ -40,7 +39,7 @@ public class main_script : MonoBehaviour
     }
     void CalcAnswer()
     {
-        difference = pass - (int)number;
+        difference = pass - number;
         if (difference < 0)
         {
             difference = difference * -1;
@@ -48,7 +47,7 @@ public class main_script : MonoBehaviour
     }
     void gameclear()
     {
-        
+
     }
 
 
@@ -57,7 +56,7 @@ public class main_script : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-
+        nownuber.text = number.ToString();
 
         if (pass == number)
         {
@@ -73,27 +72,28 @@ public class main_script : MonoBehaviour
                     GetComponent<main_script>().gameclear();
                 }
 
-            }else if (pass != number)
+            }
+            else if (pass != number)
             {
                 stoptime = 0;
             }
         }
-        if (Input.GetMouseButton(0)&&measurement==true)
+        if (Input.GetMouseButton(0) && measurement == true)
         {
             lastMousePosition = Input.mousePosition.x;
             MousePosi_x = (lastMousePosition - startMousePosition) / 34;
             MousePosi_x = Mathf.Floor(MousePosi_x);
-            
-                if (360f >= this.transform.rotation.z+MousePosi_x)
-                {
-                    transform.Rotate(0f, 0f, MousePosi_x);
-                }
-                else
-                {
-                    transform.Rotate(0f, 0f, 360f - (transform.rotation.z + MousePosi_x));
-                }
-            number = (int)transform.rotation.z / 6;
-            number = Mathf.Floor(transform.rotation.z);
+
+            if (360f >= this.transform.rotation.z + MousePosi_x)
+            {
+                transform.Rotate(0f, 0f, MousePosi_x);
+            }
+            else
+            {
+                transform.Rotate(0f, 0f, 360f - (transform.rotation.z + MousePosi_x));
+            }
+            number += (int)MousePosi_x;
+            Debug.Log(number);
 
         }
         else if (Input.GetMouseButtonUp(0))
@@ -112,40 +112,7 @@ public class main_script : MonoBehaviour
                     lastMousePosition = 0;
                     measurement = true;
                 }
-                /*if (Input.GetMouseButtonDown(0))
-                {
-                    number -= 1;
-                    transform.Rotate(0f, 0f, -6f);
-                    this.GetComponent<main_script>().CalcAnswer();
-                    AudioSource audio = GetComponent<AudioSource>();
-                    audio.volume = difference;
-                    //audioSource.PlayOneShot(Sound1);
-                    Volume = 0.1f;
-                    if (number > 0)
-                    {
-                        transform.rotation = Quaternion.Euler(0f, 0f, 360f);
-                        number = 60;
 
-                    }
-                }
-                else
-                    if (Input.GetMouseButtonDown(1))
-                {
-                    number += 1;
-                    transform.Rotate(0f, 0f, 6f);
-                    this.GetComponent<main_script>().CalcAnswer();
-                    AudioSource audio = GetComponent<AudioSource>();
-                    audio.volume = difference;
-                    //audioSource.PlayOneShot(Sound1);
-                    Volume = 0.1f;
-                    if (number>60)
-                    {
-                        transform.rotation= Quaternion.Euler(0, 0, 0);
-                        number = 0;
-                    }
-
-
-                }*/
             }
             Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);
 
