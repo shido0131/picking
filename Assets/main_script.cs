@@ -16,6 +16,7 @@ public class main_script : MonoBehaviour
     int passtimes;
     float MousePosi_x;
     float MousePosi_y;
+    float rote_z;
     public float stoptime;
     public int pass;
     private Camera mainCamera;
@@ -81,10 +82,10 @@ public class main_script : MonoBehaviour
         if (Input.GetMouseButton(0) && measurement == true)
         {
             lastMousePosition = Input.mousePosition.x;
-            MousePosi_x = (lastMousePosition - startMousePosition) / 34;
+            MousePosi_x = (lastMousePosition - startMousePosition);
             MousePosi_x = Mathf.Floor(MousePosi_x);
 
-            if (360f >= this.transform.rotation.z + MousePosi_x)
+            /*if (360f >= this.transform.rotation.z + MousePosi_x)
             {
                 transform.Rotate(0f, 0f, MousePosi_x);
             }
@@ -92,24 +93,45 @@ public class main_script : MonoBehaviour
             {
                 transform.Rotate(0f, 0f, 360f - (transform.rotation.z + MousePosi_x));
             }
-            number += (int)MousePosi_x;
-            Debug.Log(number);
+            rote_z = transform.rotation.z;
+            number += (int)MousePosi_x;*/
+            /*if (transform.rotation.z < 0)
+            {
+                number = ((int)transform.rotation.z * -1 + 180)/6;
+            }else if(transform.rotation.z>0)
+            {
+                number = (int)transform.rotation.z/ 6;
+            }
+            if (((int)transform.rotation.z * -1 + 180) / 6 == 0 | (int)transform.rotation.z * -1 + 180 / 6 == 0)
+            {
+                number = 60;
+            }*/
+            /*if (number + (int)MousePosi_x <= 60)
+            {
+                number += (int)MousePosi_x-60;
+            }
+            else
+            {
+                number += (int)MousePosi_x;
+            }*/
+
 
         }
         else if (Input.GetMouseButtonUp(0))
         {
             measurement = false;
             startMousePosition = 0;
-            lastMousePosition = 0;
+            lastMousePosition = Input.mousePosition.x;
+            //ダイアルをクリックした時の座標と離した時の差分を角度回す
+            Debug.Log(MousePosi_x);
         }
         if (Physics.Raycast(ray, out hit, 10.0f))
         {
-            if (hit.collider.gameObject.tag == "dial")
+            if (hit.collider.gameObject.tag == "dial"&&measurement==false)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     startMousePosition = Input.mousePosition.x;
-                    lastMousePosition = 0;
                     measurement = true;
                 }
 
