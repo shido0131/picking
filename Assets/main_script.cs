@@ -14,6 +14,7 @@ public class main_script : MonoBehaviour
     int number;
     int difference;
     int passtimes;
+    int nownumbers;
     float MousePosi_x;
     float MousePosi_y;
     float rote_z;
@@ -22,6 +23,8 @@ public class main_script : MonoBehaviour
     private Camera mainCamera;
     private float startMousePosition;
     private float lastMousePosition;
+    private float dummylastMousePosition;
+    private float onthewayMousePosition;
     private bool measurement;
 
     void Start()
@@ -58,7 +61,64 @@ public class main_script : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         nownuber.text = number.ToString();
+        if (Physics.Raycast(ray, out hit, 10.0f))
+        {
+            if (hit.collider.gameObject.tag == "dial" && measurement == false)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    startMousePosition = Input.mousePosition.x;
+                    measurement = true;
+                }
 
+            }
+            Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);
+
+        }
+        if (Input.GetMouseButton(0)&&measurement==true)
+        {
+            dummylastMousePosition = Input.mousePosition.x;
+            onthewayMousePosition = (dummylastMousePosition - startMousePosition) / 10;//ダイアルをクリックした時の座標と離した時の差分
+            if (onthewayMousePosition < 0)
+            {
+                nownumbers=(int)onthewayMousePosition * -1;
+            }
+            onthewayMousePosition = Mathf.Floor(onthewayMousePosition);
+            nownuber.text = ((int)onthewayMousePosition).ToString();
+            nownuber.color = new Color(0.9922f, 0.4941f, 0f, 1f);
+        }
+        if (Input.GetMouseButtonUp(0) && measurement == true)
+        {
+            measurement = false;
+            if (onthewayMousePosition < 0)
+            {
+                for (int x = 0; x < nownumbers; x++)
+                {
+                    transform.Rotate(0f, 0f, -6f);
+                    number -= 1;
+                    if (number < 0)
+                    {
+                        number = 60;
+                    }
+
+                }
+            }
+            else
+            {
+                for (int x = 0; x < nownumbers; x++)
+                {
+                    transform.Rotate(0f, 0f, 6f);
+                    number += 1;
+                    if (number > 60)
+                    {
+                        number = 1;
+                    }
+                }
+            }
+            Debug.Log(nownumbers);
+            //ダイアルをクリックした時の座標と離した時の差分を角度回す●
+            //Debug.Log(MousePosi_x);
+        }
         if (pass == number)
         {
             stoptime += Time.deltaTime;
@@ -78,66 +138,6 @@ public class main_script : MonoBehaviour
             {
                 stoptime = 0;
             }
-        }
-        if (Input.GetMouseButton(0) && measurement == true)
-        {
-            lastMousePosition = Input.mousePosition.x;
-            MousePosi_x = (lastMousePosition - startMousePosition);
-            MousePosi_x = Mathf.Floor(MousePosi_x);
-
-            /*if (360f >= this.transform.rotation.z + MousePosi_x)
-            {
-                transform.Rotate(0f, 0f, MousePosi_x);
-            }
-            else
-            {
-                transform.Rotate(0f, 0f, 360f - (transform.rotation.z + MousePosi_x));
-            }
-            rote_z = transform.rotation.z;
-            number += (int)MousePosi_x;*/
-            /*if (transform.rotation.z < 0)
-            {
-                number = ((int)transform.rotation.z * -1 + 180)/6;
-            }else if(transform.rotation.z>0)
-            {
-                number = (int)transform.rotation.z/ 6;
-            }
-            if (((int)transform.rotation.z * -1 + 180) / 6 == 0 | (int)transform.rotation.z * -1 + 180 / 6 == 0)
-            {
-                number = 60;
-            }*/
-            /*if (number + (int)MousePosi_x <= 60)
-            {
-                number += (int)MousePosi_x-60;
-            }
-            else
-            {
-                number += (int)MousePosi_x;
-            }*/
-
-
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            measurement = false;
-            startMousePosition = 0;
-            lastMousePosition = Input.mousePosition.x;
-            //ダイアルをクリックした時の座標と離した時の差分を角度回す
-            Debug.Log(MousePosi_x);
-        }
-        if (Physics.Raycast(ray, out hit, 10.0f))
-        {
-            if (hit.collider.gameObject.tag == "dial"&&measurement==false)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    startMousePosition = Input.mousePosition.x;
-                    measurement = true;
-                }
-
-            }
-            Debug.DrawRay(ray.origin, ray.direction * 10, Color.red, 5);
-
         }
     }
 }
