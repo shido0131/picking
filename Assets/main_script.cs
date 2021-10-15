@@ -9,21 +9,16 @@ public class main_script : MonoBehaviour
     public GameObject dummy_safe;
     public GameObject clear_safe;
     public Text nownuber;
-    int tragetnumeber;
     int soundlevel;
     int number;
     int difference;
     int passtimes;
-    int nownumbers;
-    float MousePosi_x;
-    float MousePosi_y;
-    float rote_z;
+    int dummyonthewayMousePosition;
     public float stoptime;
     public int pass;
     private Camera mainCamera;
     private float startMousePosition;
     private float lastMousePosition;
-    private float dummylastMousePosition;
     private float onthewayMousePosition;
     private bool measurement;
 
@@ -77,12 +72,8 @@ public class main_script : MonoBehaviour
         }
         if (Input.GetMouseButton(0)&&measurement==true)
         {
-            dummylastMousePosition = Input.mousePosition.x;
-            onthewayMousePosition = (dummylastMousePosition - startMousePosition) / 10;//ダイアルをクリックした時の座標と離した時の差分
-            if (onthewayMousePosition < 0)
-            {
-                nownumbers=(int)onthewayMousePosition * -1;
-            }
+            lastMousePosition = Input.mousePosition.x;
+            onthewayMousePosition = (lastMousePosition - startMousePosition) / 10;//ダイアルをクリックした時の座標と離した時の差分
             onthewayMousePosition = Mathf.Floor(onthewayMousePosition);
             nownuber.text = ((int)onthewayMousePosition).ToString();
             nownuber.color = new Color(0.9922f, 0.4941f, 0f, 1f);
@@ -90,32 +81,32 @@ public class main_script : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && measurement == true)
         {
             measurement = false;
-            if (onthewayMousePosition < 0)
+            number += (int)onthewayMousePosition;
+            if ( number > 60)
             {
-                for (int x = 0; x < nownumbers; x++)
-                {
-                    transform.Rotate(0f, 0f, -6f);
-                    number -= 1;
-                    if (number < 0)
-                    {
-                        number = 60;
-                    }
-
-                }
+                number %= 60;
             }
-            else
+            if (number < 0)
             {
-                for (int x = 0; x < nownumbers; x++)
-                {
-                    transform.Rotate(0f, 0f, 6f);
-                    number += 1;
-                    if (number > 60)
-                    {
-                        number = 1;
-                    }
-                }
+                number *= -1;
             }
-            Debug.Log(nownumbers);
+            if (number == 0)
+            {
+                number =60;
+            }
+            dummyonthewayMousePosition = (int)onthewayMousePosition;
+            if (dummyonthewayMousePosition < 0)
+            {
+                dummyonthewayMousePosition *= -1;
+            }
+            for (int i=0;i<dummyonthewayMousePosition;++i)
+            {
+                
+                transform.Rotate(0f,0f,6f);
+            }
+            transform.Rotate(0f,0f,onthewayMousePosition*6);
+            nownuber.text = (number).ToString();
+            nownuber.color = new Color(1f, 0.92f, 0.016f, 1f);
             //ダイアルをクリックした時の座標と離した時の差分を角度回す●
             //Debug.Log(MousePosi_x);
         }
