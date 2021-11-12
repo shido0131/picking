@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Collections;
+using System.IO;
+
 
 public class main_script : MonoBehaviour
 {
@@ -17,44 +20,51 @@ public class main_script : MonoBehaviour
     int passtimes;
     int dummyonthewayMousePosition;
     float stoptime;
+    float secounds;
+    float secound;
+    float minutes;
     int pass;
     private Camera mainCamera;
-    float fast;
-    float second;
-    float third;
-    float fourth;
-    float fiveth;
-    float secound;
-    float secounds;
-    float minutes;
     private float startMousePosition;
     private float lastMousePosition;
     private float onthewayMousePosition;
     private bool timer_measurement;
     private bool measurement;
     private bool delay;
+    private PlayerData myData;
+    [SerializeField] Text counterText;
+    [SerializeField] InputField inputArea;
+    [System.Serializable]
+    public class PlayerData
+    {
+        float fast;
+        float second;
+        float third;
+        float fourth;
+        float fiveth;
 
+        
+
+         public string playerscore;
+    }
+    
     void Start()
     {
-        fast = PlayerPrefs.GetFloat("1位", fast);
-        second = PlayerPrefs.GetFloat("2位", second);
-        third = PlayerPrefs.GetFloat("3位", third);
-        fourth = PlayerPrefs.GetFloat("4位", fourth);
-        fiveth = PlayerPrefs.GetFloat("5位", fiveth);
         mainCamera = Camera.main;
         GetComponent<main_script>().setplay();
         pass = Random.Range(1, 60);
         Ranking.gameObject.SetActive(false);
+        myData = new PlayerData();
     }
     void setplay()
     {
         secound = 0;
         secound = PlayerPrefs.GetFloat("ReoundingTime", 0);
+        minutes = 0;
+        secounds = 0;//score用の時間を計測
         number = 0;
         passtimes = 5;
         pass = Random.Range(1, 60);
-        secounds = 0;
-        minutes = 0;
         nownuber.gameObject.SetActive(true);
         Timer.gameObject.SetActive(true);
         //Ranking.gameObject.SetActive(false);
@@ -83,7 +93,7 @@ public class main_script : MonoBehaviour
         {
             fiveth = secound;
         }
-        timer_measurement = false;*/
+        timer_measurement = false;*///ランキングのスコアを算出
 
     }
 
@@ -95,14 +105,14 @@ public class main_script : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             nownuber.text = number.ToString();
-            secounds += Time.deltaTime;
+            /*secounds += Time.deltaTime;
             secound += Time.deltaTime;
             Timer.text = minutes.ToString("f0") + "m" + secounds.ToString("f2") + "s";
             if (secounds >= 60)
             {
                 secounds -= 60;
                 minutes += 1;
-            }
+            }*/
             if (Physics.Raycast(ray, out hit, 10.0f))
             {
                 if (hit.collider.gameObject.tag == "dial" && measurement == false)
@@ -195,4 +205,28 @@ public class main_script : MonoBehaviour
         }
         delay = false;
     }
+    public void SavePlayerData()
+    {
+        StreamWriter writer;
+        var playerscore = inputArea.text;
+        myData.playerscore = playerscore;
+        string jsonstr = JsonUtility.ToJson(myData);
+        writer = new StreamWriter(Application.dataPath + "/save" + playerscore + ".json", false);
+        writer.Write(jsonstr);
+        writer.Flush();
+        writer.Close();
+    }
+    public void LoadPlayerScoreData()
+    {
+        string datestr = "";
+        var playerscore = inputArea.text;
+        StringReader reader;
+        reader = new StringReader(Application.dataPath + "/save" + playerscore + ".json");
+        datestr = reader.ReadToEnd();
+        reader.Close();
+        myData = JsonUtility.FromJson<PlayerData>(datestr);//ロードしたデータの上書き
+        Debug.Log(myData + playerscore + "のデータをロードしました。");
+        counterText.text = myData.playerscore.ToString();
+    }
 }
+
