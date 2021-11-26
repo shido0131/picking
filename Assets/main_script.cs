@@ -42,10 +42,8 @@ public class main_script : MonoBehaviour
         float third;
         float fourth;
         float fiveth;
-
-        
-
-         public string playerscore;
+        public float cleartime;
+        public string playerscore;
     }
     
     void Start()
@@ -105,6 +103,7 @@ public class main_script : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             nownuber.text = number.ToString();
+            myData.cleartime += Time.deltaTime;
             /*secounds += Time.deltaTime;
             secound += Time.deltaTime;
             Timer.text = minutes.ToString("f0") + "m" + secounds.ToString("f2") + "s";
@@ -205,7 +204,7 @@ public class main_script : MonoBehaviour
         }
         delay = false;
     }
-    public void SavePlayerData()
+    public void SavePlayerScoreData()
     {
         StreamWriter writer;
         var playerscore = inputArea.text;
