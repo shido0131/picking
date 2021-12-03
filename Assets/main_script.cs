@@ -8,21 +8,19 @@ using System.IO;
 
 public class main_script : MonoBehaviour
 {
-    float Volume;
     public AudioClip Sound1;
     public AudioSource audioSource;
     public GameObject dummy_safe;
     public GameObject clear_safe;
     public Text nownuber;
     public Text Timer;
-    public Text Ranking;
+    public Text Password;
+    public Text ranking;
     int number;
     int passtimes;
     int dummyonthewayMousePosition;
     float stoptime;
     float secounds;
-    float secound;
-    float minutes;
     int pass;
     private Camera mainCamera;
     private float startMousePosition;
@@ -31,67 +29,87 @@ public class main_script : MonoBehaviour
     private bool timer_measurement;
     private bool measurement;
     private bool delay;
-    private PlayerData myData;
-    [SerializeField] Text counterText;
     [SerializeField] InputField inputArea;
-    [System.Serializable]
+    public Button button;
     public class PlayerData
     {
-        float fast;
-        float second;
-        float third;
-        float fourth;
-        float fiveth;
-        public float cleartime;
-        public string playerscore;
+        public string myName;
+        public float[] rankingscores = new float[6];
+        public float fast;
+        public float second;
+        public float third;
+        public float fourth;
+        public float fiveth;
     }
-    
+
+    PlayerData myData = new PlayerData();
+    public void SavePlayerData()
+    {
+        StreamWriter writer;
+        myData.myName = inputArea.text;
+        string jsonstr = JsonUtility.ToJson(myData);
+        writer = new StreamWriter(Application.dataPath + "/playersavedata.json", false);//「/」に今回でいう「C:\Users\shido\OneDrive\ドキュメント\GitHub\セーブ＆ロード実験」の中の「playersavedata.json」を指定する
+        writer.Write(jsonstr);
+        writer.Flush();
+        writer.Close();
+        inputArea.text = "";
+    }
+    public void LoadPlayerData()
+    {
+        string datastr = "";
+        var playerName = inputArea.text;
+        StreamReader reader;
+
+        reader = new StreamReader(Application.dataPath + "/playersavedata.json");
+        datastr = reader.ReadToEnd();
+        reader.Close();
+        myData.myName = JsonUtility.FromJson<string>(datastr); // ロードしたデータで上書き
+        Debug.Log(myData.myName + "のデータをロードしました");
+    }
     void Start()
     {
+        ranking.text = "1位：" + myData.rankingscores[0].ToString("f2") + "\n" + "2位：" + myData.rankingscores[1].ToString("f2") + "\n" + "3位：" + myData.rankingscores[2].ToString("f2") + "\n" + "4位：" + myData.rankingscores[3].ToString("f2") + "\n" + "5位：" + myData.rankingscores[4].ToString("f2");
+        timer_measurement = false;
+        pass = 0;
+        ranking.gameObject.SetActive(true);
+        inputArea.gameObject.SetActive(true);
+        button.gameObject.SetActive(true);
+        nownuber.gameObject.SetActive(false);
+        Timer.gameObject.SetActive(false);
+        Password.gameObject.SetActive(false);
         mainCamera = Camera.main;
-        GetComponent<main_script>().setplay();
         pass = Random.Range(1, 60);
-        Ranking.gameObject.SetActive(false);
         myData = new PlayerData();
+        
     }
-    void setplay()
+    public void setplay()
     {
-        secound = 0;
-        secound = PlayerPrefs.GetFloat("ReoundingTime", 0);
-        minutes = 0;
-        secounds = 0;//score用の時間を計測
+        Password.gameObject.SetActive(true);
+        ranking.gameObject.SetActive(false);
+        inputArea.gameObject.SetActive(false);
+        button.gameObject.SetActive(false);
+        nownuber.gameObject.SetActive(true);
+        Timer.gameObject.SetActive(true);
+        myData.myName = inputArea.text;
+        secounds = 0;
+        secounds = PlayerPrefs.GetFloat("ReoundingTime", 0);
         number = 0;
         passtimes = 5;
         pass = Random.Range(1, 60);
-        nownuber.gameObject.SetActive(true);
-        Timer.gameObject.SetActive(true);
+        Password.text = (pass).ToString();
         //Ranking.gameObject.SetActive(false);
         timer_measurement = true;
 
     }
     void gameclear()
     {
-        /*GameObject.Instantiate(clear_safe);
-        if (secound < fast||fast==0)
-        {
-            fast = secound;
-        }else if (secound < second||second == 0)
-        {
-            second = secound;
-        }
-        else if (secound < third||third == 0)
-        {
-            third = secound;
-        }
-        else if (secound < fourth||fourth == 0)
-        {
-            fourth = secound;
-        }
-        else if (secound < fiveth||fiveth == 0)
-        {
-            fiveth = secound;
-        }
-        timer_measurement = false;*///ランキングのスコアを算出
+        timer_measurement = false;
+        ranking.gameObject.SetActive(true);
+        inputArea.gameObject.SetActive(true);
+        button.gameObject.SetActive(true);
+        myData.rankingscores[5] = secounds;
+        ranking.text = "1位：" + myData.rankingscores[0].ToString("f2") + "\n" + "2位：" + myData.rankingscores[1].ToString("f2") + "\n" + "3位：" + myData.rankingscores[2].ToString("f2") + "\n" + "4位：" + myData.rankingscores[3].ToString("f2") + "\n" + "5位：" + myData.rankingscores[4].ToString("f2");
+        GameObject.Instantiate(clear_safe);
 
     }
 
@@ -103,15 +121,9 @@ public class main_script : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             nownuber.text = number.ToString();
-            myData.cleartime += Time.deltaTime;
-            /*secounds += Time.deltaTime;
-            secound += Time.deltaTime;
-            Timer.text = minutes.ToString("f0") + "m" + secounds.ToString("f2") + "s";
-            if (secounds >= 60)
-            {
-                secounds -= 60;
-                minutes += 1;
-            }*/
+            secounds += Time.deltaTime;
+            Debug.Log(secounds);
+            Timer.text = (secounds/60).ToString("f0") + "m" + (secounds%60).ToString("f2") + "s";
             if (Physics.Raycast(ray, out hit, 10.0f))
             {
                 if (hit.collider.gameObject.tag == "dial" && measurement == false)
@@ -170,10 +182,13 @@ public class main_script : MonoBehaviour
                 {
                     stoptime = 0;
                     passtimes -= 1;
-                    pass = Random.Range(1, 60);
                     if (passtimes == 0)
                     {
                         GetComponent<main_script>().gameclear();
+                    }else
+                    {
+                        pass = Random.Range(1, 60);
+                        Password.text = (pass).ToString();
                     }
 
                 }
@@ -204,28 +219,4 @@ public class main_script : MonoBehaviour
         }
         delay = false;
     }
-    public void SavePlayerScoreData()
-    {
-        StreamWriter writer;
-        var playerscore = inputArea.text;
-        myData.playerscore = playerscore;
-        string jsonstr = JsonUtility.ToJson(myData);
-        writer = new StreamWriter(Application.dataPath + "/save" + playerscore + ".json", false);
-        writer.Write(jsonstr);
-        writer.Flush();
-        writer.Close();
-    }
-    public void LoadPlayerScoreData()
-    {
-        string datestr = "";
-        var playerscore = inputArea.text;
-        StringReader reader;
-        reader = new StringReader(Application.dataPath + "/save" + playerscore + ".json");
-        datestr = reader.ReadToEnd();
-        reader.Close();
-        myData = JsonUtility.FromJson<PlayerData>(datestr);//ロードしたデータの上書き
-        Debug.Log(myData + playerscore + "のデータをロードしました。");
-        counterText.text = myData.playerscore.ToString();
-    }
 }
-
